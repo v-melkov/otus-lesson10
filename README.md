@@ -1,11 +1,13 @@
-## Стенд для домашнего занятия "Управление пакетами. Дистрибьюция софта
+## Стенд для домашнего занятия «Управление пакетами. Дистрибьюция софта»
 ### Сборка собственного rpm пакета и размещение его в собственном репозитории
-#### Сборка кастомного nginx...
+
+-----
+#### Сборка кастомного nginx
 ##### Установим необходимый софт
-    sudo yum install -y -q epel-release # необязательно, нужно для mock, который здесь в итоге не использовался
-    sudo yum install -y -q git rpm-build rpmdevtools gcc make automake yum-utils
+    sudo yum install epel-release # необязательно, нужно для mock, который здесь в итоге не использовался
+    sudo yum install git rpm-build rpmdevtools gcc make automake yum-utils
 ##### Установим необходимые для компиляции nginx devel-файлы
-    sudo yum-builddep -y -q nginx # хорошая команда, заменила мне ручную установку зависимостей
+    sudo yum-builddep nginx # хорошая команда, заменила мне ручную установку зависимостей
 ##### Скачиваем rpm с исходниками nginx. Добавим репозиторий nginx (https://nginx.org/ru/linux_packages.html)
 
     cat <<'EOF1' | sudo tee /etc/yum.repos.d/nginx.repo
@@ -26,21 +28,23 @@
     rpmdev-setuptree
     rpm -ivh /home/vagrant/nginx-* # команду можно подрихтовать, чтобы не все nginx-* файлы устанавливались
 
-##### Для примера уберем поддержку ipv6 командой
+##### Для примера уберем поддержку ipv6
     sed -i '/--with-ipv6/d' ~/rpmbuild/SPECS/nginx.spec
 ##### Создаем rpm
     rpmbuild -bb ~/rpmbuild/SPECS/nginx.spec
 
 rpm пакет собран.
 
+-----
+
 
 #### Установка репозитория
 ##### Установим необходимый софт
-    sudo yum install -y -q createrepo
-##### Создаем директорию для репозитория...
-    REPODIR=/usr/share/nginx/html/repos/x86_64 # в дальнейшем будет директория через nginx
+    sudo yum install createrepo
+##### Создаем директорию для репозитория
+    REPODIR=/usr/share/nginx/html/repos/x86_64 # предполагаем использование nginx
     sudo mkdir -p $REPODIR
-##### Копируем готовые rpm и создаем сам репозиторий
+##### Копируем готовые rpm в нашу папку и создаем базу данных репозитория
     sudo cp -r ~/rpmbuild/RPMS/x86_64/* $REPODIR
     sudo createrepo $REPODIR
 ##### Создаем файл repo для нашего репозитория (пока локальный)
@@ -97,5 +101,11 @@ rpm пакет собран.
     Repo-filename: /etc/yum.repos.d/my.repo
 
 
-Задание выполнено
+Задание выполнено.
+
+Пытался собрать пакет telegram по инструкции с https://github.com/EasyCoding/tgbuild/blob/master/doc/build_using_mock.md
+
+но это заняло очень много времени (много пакетов не из основных репозиториев CentOs7, а потом и CentOs8) и поэтому забил. Нужно разобраться с добавлением альтернативных репозиториев в /etc/mock/*.cfg
+
+**Совсем НЕ разобрался как создать свой SPEC файл.**
 ## Спасибо за проверку!

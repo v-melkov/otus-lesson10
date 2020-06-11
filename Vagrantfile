@@ -29,7 +29,7 @@ Vagrant.configure("2") do |config|
             end
 
         box.vm.provision "shell", privileged: false, inline: <<-SHELL
-        echo -e "\n\nСборка собственного rpm пакета и размещение его в собственном репозитории"
+        echo -e "\n\nЗадание: собрать собственный rpm пакет и разместить его в собственном репозитории"
         echo -e "\nСборка кастомного nginx..."
         echo -e "Устанавливаем необходимый софт..."
         sudo yum install -y -q epel-release > /dev/null 2>&1
@@ -51,7 +51,7 @@ baseurl=http://nginx.org/packages/mainline/centos/8/SRPMS/
 gpgcheck=0
 enabled=1
 EOF1
-        yumdownloader --source nginx > /dev/null 2>&1
+        yumdownloader --source nginx
         rpmdev-setuptree
         rpm -ivh /home/vagrant/nginx-* > /dev/null 2>&1
 
@@ -59,7 +59,7 @@ EOF1
         sed -i '/--with-ipv6/d' ~/rpmbuild/SPECS/nginx.spec
         echo "Создаем rpm..."
         rpmbuild -bb ~/rpmbuild/SPECS/nginx.spec > /dev/null 2>&1
-
+        echo "Готово"
         echo -e "\n\nУстановка собственного репозитория..."
         echo "Установим необходимый софт"
         sudo yum install -y -q createrepo
