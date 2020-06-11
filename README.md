@@ -67,7 +67,7 @@ rpm пакет собран.
     Size         : 3.7 M
     Source       : nginx-1.19.0-1.el8.ngx.src.rpm
     Repository   : @System
-    *From repo    : myrepo-x86_64*
+    From repo    : myrepo-x86_64
     Summary      : High performance web server
     URL          : http://nginx.org/
     License      : 2-clause BSD-like license
